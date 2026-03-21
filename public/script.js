@@ -16,9 +16,13 @@ let numberOfPlayers = 0;
 let ON = false;
 const sound = new Audio("piece/move-self.mp3");
 const capture = new Audio("piece/capture.mp3");
-let serverUrl = "https://chess-game-pwkg.onrender.com";
+let serverUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5500'
+    : 'https://chess-game-pwkg.onrender.com';
 // AI server (used for /move). Keep this separate so we can wake it on page load
-const aiServerUrl = "https://chess-game-backend-gl0l.onrender.com";
+const aiServerUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000'
+    : 'https://chess-game-backend-gl0l.onrender.com';
 
 let mode = localStorage.getItem("gameMode");
 if (mode === "pve") {
