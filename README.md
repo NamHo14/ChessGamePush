@@ -33,7 +33,7 @@ It features a custom chess engine powered by **minimax with alpha-beta pruning**
 
 **Deployment**
 
--   Full-stack deployed on **Render** (both Node.js and Flask servers)
+-   Full-stack deployed on vercel and railway
 
 ---
 
