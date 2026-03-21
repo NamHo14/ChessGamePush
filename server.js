@@ -7,7 +7,6 @@ const colors = ["rnbkqp", "RNBKQP"];
 let moveLogServer = [];
 let chessBoard = "";
 let players = [];
-let port = process.env.PORT || 5500;
 const path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -15,10 +14,6 @@ app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
     res.render("index");
-});
-
-server.listen(port, () => {
-    console.log("Server working");
 });
 
 io.on("connection", (socket) => {
@@ -85,3 +80,5 @@ io.on("connection", (socket) => {
     socket.emit("AllyPiece", AllyPiece);
     socket.emit("EnemyPiece", EnemyPiece);
 });
+
+module.exports = server;
