@@ -14,6 +14,7 @@ let multiplayer = false;
 let socket;
 let numberOfPlayers = 0;
 let ON = false;
+let pendingInitialAIMove = false;
 const sound = new Audio("piece/move-self.mp3");
 const capture = new Audio("piece/capture.mp3");
 let serverUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -37,9 +38,7 @@ if (mode === "pve") {
         AIPiece = "RNBKQP";
         const cont = document.querySelector(".main-cont");
         cont.style.flexWrap = "wrap-reverse";
-        if (CHESSAI === true && AIPiece === "RNBKQP") {
-            AIMoveMaker();
-        }
+        pendingInitialAIMove = true;
     }
 } else if (mode === "pvp") {
     AllyPiece = "RNBKQP";
@@ -797,3 +796,7 @@ if (mode === "online") {
 
 createSquare();
 positionUpdate(ChessBoardPosition);
+
+if (pendingInitialAIMove) {
+    AIMoveMaker();
+}
