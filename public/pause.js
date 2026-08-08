@@ -73,6 +73,8 @@ function restart() {
 
 function quit() {
     closeOverlayLikeUi();
-    reset();
+    if (mode === "online" && socket) {
+        socket.disconnect();
+    }
     window.location.href = "index.html";
 }
