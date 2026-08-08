@@ -121,6 +121,7 @@ let highlighted = [];
 let possMoves = [];
 let selectedPiece = null;
 let statusOverlay = null;
+let onlineTurnNotice = null;
 
 function hideStatus() {
     if (statusOverlay) {
@@ -180,6 +181,52 @@ function goToMainMenuFromStatus() {
     window.location.href = "index.html";
 }
 
+function hideOnlineTurnNotice() {
+    if (onlineTurnNotice) {
+        onlineTurnNotice.remove();
+        onlineTurnNotice = null;
+    }
+}
+
+function isMyOnlineTurn() {
+    if (AllyPiece === "RNBKQP") {
+        return moveLog.length % 2 === 0;
+    }
+    if (AllyPiece === "rnbkqp") {
+        return moveLog.length % 2 === 1;
+    }
+    return false;
+}
+
+function updateOnlineTurnNotice() {
+    if (!multiplayer || mode !== "online" || numberOfPlayers < 2) {
+        hideOnlineTurnNotice();
+        return;
+    }
+
+    if (isMyOnlineTurn()) {
+        hideOnlineTurnNotice();
+        return;
+    }
+
+    if (!onlineTurnNotice) {
+        const notice = document.createElement("div");
+        notice.classList.add("cont");
+        notice.style.position = "fixed";
+        notice.style.top = "16px";
+        notice.style.left = "16px";
+        notice.style.zIndex = "1100";
+        notice.style.width = "auto";
+        notice.style.height = "auto";
+        notice.style.padding = "10px 14px";
+        notice.style.fontSize = "18px";
+        notice.style.boxShadow = "0 10px 25px rgba(0, 0, 0, 0.25)";
+        notice.textContent = "Opponent turn";
+        document.body.appendChild(notice);
+        onlineTurnNotice = notice;
+    }
+}
+
 if (multiplayer) {
     socket.on("ChessboardPosition", (data) => {
         console.log("Update from server:", data);
@@ -191,6 +238,7 @@ if (multiplayer) {
     socket.on("moves", (data) => {
         console.log("Update from server:", data);
         moveLog = data;
+        updateOnlineTurnNotice();
     });
 
     socket.on("full", (data) => {
@@ -215,6 +263,7 @@ if (multiplayer) {
         } else if (numberOfPlayers < 2) {
             wait();
         }
+        updateOnlineTurnNotice();
     });
 
     socket.on("AllyPiece", (data) => {
@@ -232,6 +281,7 @@ if (multiplayer) {
             const cont = document.querySelector(".main-cont");
             cont.style.flexWrap = "wrap";
         }
+        updateOnlineTurnNotice();
     });
     socket.on("EnemyPiece", (data) => {
         if (
@@ -378,6 +428,7 @@ function handleClick(e) {
                     socket.emit("moves", moveLog);
                     socket.emit("Promotion", promotion);
                     socket.emit("ChessboardPosition", ChessBoardPosition);
+                    updateOnlineTurnNotice();
                 }
             }
             highlighted.forEach((square) => {
@@ -545,6 +596,7 @@ function AlertCheckAndCheckMate(state, multiplayer = false) {
     // }, 0);
 }
 function reset() {
+    hideOnlineTurnNotice();
     AllyPiece = "RNBKQP";
     EnemyPiece = "rnbkqp";
     selected = false;
