@@ -22,7 +22,7 @@ function wakeServers() {
 
         // Wake up multiplayer server (must match serverUrl in script.js)
         const multiplayerServerUrl =
-            "https://prolific-smile-production-ce7d.up.railway.app";
+            "https://chess-game-pwkg.onrender.com";
         fetch(multiplayerServerUrl + "/").catch(() => {}); // Ignore errors
     }
 }
