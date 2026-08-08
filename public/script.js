@@ -136,6 +136,12 @@ function showStatus(message, options = {}) {
     const body = document.querySelector("body");
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
+    if (options.compact) {
+        overlay.style.background = "transparent";
+        overlay.style.pointerEvents = "none";
+        overlay.style.alignItems = "flex-start";
+        overlay.style.paddingTop = "16px";
+    }
     body.appendChild(overlay);
 
     const div = document.createElement("div");
@@ -146,6 +152,7 @@ function showStatus(message, options = {}) {
         div.style.padding = "18px 16px";
         div.style.textAlign = "center";
         div.style.gap = "12px";
+        div.style.pointerEvents = "auto";
     }
     div.textContent = message;
     overlay.appendChild(div);
