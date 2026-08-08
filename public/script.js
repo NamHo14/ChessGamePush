@@ -214,7 +214,7 @@ function updateOnlineTurnNotice() {
         notice.classList.add("cont");
         notice.style.position = "fixed";
         notice.style.top = "16px";
-        notice.style.left = "16px";
+        notice.style.right = "16px";
         notice.style.zIndex = "1100";
         notice.style.width = "auto";
         notice.style.height = "auto";
@@ -839,22 +839,26 @@ window.addEventListener("load", () => {
     positionUpdate(ChessBoardPosition);
 
     if (mode === "online") {
-        showStatus("Connecting to online server ...", {
-            compact: true,
-            actionLabel: "Main Menu",
-            onAction: goToMainMenuFromStatus,
-        });
+        if (numberOfPlayers < 2) {
+            showStatus("Connecting to online server ...", {
+                compact: true,
+                actionLabel: "Main Menu",
+                onAction: goToMainMenuFromStatus,
+            });
+        }
         socket.on("connect", () => {
             if (numberOfPlayers === 2) {
                 hideStatus();
             }
         });
         socket.on("connect_error", () => {
-            showStatus("Waking up online server ...", {
-                compact: true,
-                actionLabel: "Main Menu",
-                onAction: goToMainMenuFromStatus,
-            });
+            if (numberOfPlayers < 2) {
+                showStatus("Waking up online server ...", {
+                    compact: true,
+                    actionLabel: "Main Menu",
+                    onAction: goToMainMenuFromStatus,
+                });
+            }
         });
     }
 
