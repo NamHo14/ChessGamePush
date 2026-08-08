@@ -121,6 +121,33 @@ function legalMoves(possibleMoves, ChessBoardPosition, piece, position) {
 let highlighted = [];
 let possMoves = [];
 let selectedPiece = null;
+let statusOverlay = null;
+
+function hideStatus() {
+    if (statusOverlay) {
+        statusOverlay.remove();
+        statusOverlay = null;
+    }
+}
+
+function showStatus(message) {
+    hideStatus();
+
+    const body = document.querySelector("body");
+    const overlay = document.createElement("div");
+    overlay.classList.add("overlay");
+    body.appendChild(overlay);
+
+    const div = document.createElement("div");
+    div.classList.add("cont");
+    div.style.width = "60%";
+    div.style.height = "60%";
+    div.textContent = message;
+    overlay.appendChild(div);
+
+    statusOverlay = overlay;
+    return div;
+}
 
 if (multiplayer) {
     socket.on("ChessboardPosition", (data) => {
@@ -181,17 +208,9 @@ if (multiplayer) {
 }
 
 function wait(full = false) {
-    const body = document.querySelector("body");
-    const overlay = document.createElement("div");
-    overlay.classList.add("overlay");
-    body.appendChild(overlay);
-    const div = document.createElement("div");
-    div.classList.add("cont");
-    div.style.width = "60%";
-    div.style.height = "60%";
-    overlay.appendChild(div);
-
-    div.textContent = full ? "Server Full" : "Waiting for second player ...";
+    const div = showStatus(
+        full ? "Server Full" : "Waiting for second player ..."
+    );
     const quitBtn = document.createElement("div");
     quitBtn.classList.add("options");
     quitBtn.textContent = "Main Menu";
@@ -200,10 +219,7 @@ function wait(full = false) {
     socket.on("numberOfPlayers", (data) => {
         numberOfPlayers = data;
         if (numberOfPlayers === 2) {
-            const all = [overlay, ...overlay.querySelectorAll("*")];
-            all.forEach((elem) => {
-                elem.remove();
-            });
+            hideStatus();
         }
     });
 }
@@ -330,10 +346,14 @@ function handleClick(e) {
 }
 
 function AIMoveMaker() {
+    showStatus("Waking up AI server ...");
     getAIMove(moveLog, ChessBoardPosition).then((aiMove) => {
         aiMove = aiMove.replace(/(?<!\d)(\d)(?!\d)/g, "0$1");
         console.log("AI move:", aiMove);
-        if (!aiMove) return;
+        if (!aiMove) {
+            hideStatus();
+            return;
+        }
         moveLog.push(aiMove);
         ChessBoardPosition = performMoves(aiMove, ChessBoardPosition);
         sound.play();
@@ -356,6 +376,9 @@ function AIMoveMaker() {
             moveLog.push(aiMove + "q");
         }
         positionUpdate(ChessBoardPosition);
+        hideStatus();
+    }).catch(() => {
+        hideStatus();
     });
 }
 function performMoves(moves, chessBoardPosition, realBoard = true) {
@@ -684,6 +707,7 @@ async function getAIMove(movesLog, board) {
         return data.move;
     } catch (error) {
         console.error("Error fetching AI move:", error);
+        throw error;
     }
 }
 
@@ -702,6 +726,18 @@ function wakeAiServer() {
 
 // Try to wake AI server immediately (non-blocking).
 wakeAiServer();
+
+if (mode === "online") {
+    showStatus("Connecting to online server ...");
+    socket.on("connect", () => {
+        if (numberOfPlayers === 2) {
+            hideStatus();
+        }
+    });
+    socket.on("connect_error", () => {
+        showStatus("Waking up online server ...");
+    });
+}
 
 createSquare();
 positionUpdate(ChessBoardPosition);
