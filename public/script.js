@@ -19,11 +19,11 @@ const sound = new Audio("piece/move-self.mp3");
 const capture = new Audio("piece/capture.mp3");
 let serverUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5500'
-    : 'https://chess-game-pwkg.onrender.com';
+    : 'https://prolific-smile-production-ce7d.up.railway.app';
 // AI server (used for /move). Keep this separate so we can wake it on page load
 const aiServerUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5000'
-    : 'https://chess-game-backend-gl0l.onrender.com';
+    : 'https://chessgamepush-production.up.railway.app';
 
 let mode = localStorage.getItem("gameMode");
 if (mode === "pve") {
@@ -392,12 +392,12 @@ function AIMoveMaker() {
         }
     );
     getAIMove(moveLog, ChessBoardPosition).then((aiMove) => {
-        aiMove = aiMove.replace(/(?<!\d)(\d)(?!\d)/g, "0$1");
-        console.log("AI move:", aiMove);
         if (!aiMove) {
             hideStatus();
             return;
         }
+        aiMove = aiMove.replace(/(?<!\d)(\d)(?!\d)/g, "0$1");
+        console.log("AI move:", aiMove);
         moveLog.push(aiMove);
         ChessBoardPosition = performMoves(aiMove, ChessBoardPosition);
         sound.play();
