@@ -130,7 +130,7 @@ function hideStatus() {
     }
 }
 
-function showStatus(message) {
+function showStatus(message, options = {}) {
     hideStatus();
 
     const body = document.querySelector("body");
@@ -140,10 +140,23 @@ function showStatus(message) {
 
     const div = document.createElement("div");
     div.classList.add("cont");
-    div.style.width = "60%";
-    div.style.height = "60%";
+    div.style.width = options.compact ? "min(42%, 520px)" : "60%";
+    div.style.height = options.compact ? "auto" : "60%";
+    if (options.compact) {
+        div.style.padding = "24px 20px";
+        div.style.textAlign = "center";
+        div.style.gap = "16px";
+    }
     div.textContent = message;
     overlay.appendChild(div);
+
+    if (options.actionLabel && options.onAction) {
+        const actionBtn = document.createElement("div");
+        actionBtn.classList.add("options");
+        actionBtn.textContent = options.actionLabel;
+        actionBtn.addEventListener("click", options.onAction);
+        div.appendChild(actionBtn);
+    }
 
     statusOverlay = overlay;
     return div;
@@ -346,7 +359,14 @@ function handleClick(e) {
 }
 
 function AIMoveMaker() {
-    showStatus("Waking up AI server ...");
+    showStatus(
+        "AI thinking for move. The first move may take longer while the server opens ...",
+        {
+            compact: true,
+            actionLabel: "Main Menu",
+            onAction: quit,
+        }
+    );
     getAIMove(moveLog, ChessBoardPosition).then((aiMove) => {
         aiMove = aiMove.replace(/(?<!\d)(\d)(?!\d)/g, "0$1");
         console.log("AI move:", aiMove);
