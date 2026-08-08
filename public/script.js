@@ -134,21 +134,21 @@ function showStatus(message, options = {}) {
     hideStatus();
 
     const body = document.querySelector("body");
-    const overlay = document.createElement("div");
-    overlay.classList.add("overlay");
-    body.appendChild(overlay);
-
     const div = document.createElement("div");
     div.classList.add("cont");
     div.style.width = options.compact ? "min(34%, 420px)" : "60%";
     div.style.height = options.compact ? "auto" : "60%";
     if (options.compact) {
+        div.style.position = "fixed";
+        div.style.top = "16px";
+        div.style.right = "16px";
+        div.style.zIndex = "1100";
         div.style.padding = "18px 16px";
         div.style.textAlign = "center";
         div.style.gap = "12px";
+        div.style.boxShadow = "0 10px 25px rgba(0, 0, 0, 0.25)";
     }
     div.textContent = message;
-    overlay.appendChild(div);
 
     if (options.actionLabel && options.onAction) {
         const actionBtn = document.createElement("div");
@@ -157,6 +157,17 @@ function showStatus(message, options = {}) {
         actionBtn.addEventListener("click", options.onAction);
         div.appendChild(actionBtn);
     }
+
+    if (options.compact) {
+        body.appendChild(div);
+        statusOverlay = div;
+        return div;
+    }
+
+    const overlay = document.createElement("div");
+    overlay.classList.add("overlay");
+    overlay.appendChild(div);
+    body.appendChild(overlay);
 
     statusOverlay = overlay;
     return div;
