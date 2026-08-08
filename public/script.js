@@ -172,6 +172,14 @@ function showStatus(message, options = {}) {
     return div;
 }
 
+function goToMainMenuFromStatus() {
+    hideStatus();
+    if (mode === "online" && socket) {
+        socket.disconnect();
+    }
+    window.location.href = "index.html";
+}
+
 if (multiplayer) {
     socket.on("ChessboardPosition", (data) => {
         console.log("Update from server:", data);
@@ -242,7 +250,7 @@ function wait(full = false, compact = false) {
             ? {
                   compact: true,
                   actionLabel: "Main Menu",
-                  onAction: quit,
+                  onAction: goToMainMenuFromStatus,
               }
             : {}
     );
@@ -388,7 +396,7 @@ function AIMoveMaker() {
         {
             compact: true,
             actionLabel: "Main Menu",
-            onAction: quit,
+            onAction: goToMainMenuFromStatus,
         }
     );
     getAIMove(moveLog, ChessBoardPosition).then((aiMove) => {
@@ -782,7 +790,7 @@ window.addEventListener("load", () => {
         showStatus("Connecting to online server ...", {
             compact: true,
             actionLabel: "Main Menu",
-            onAction: quit,
+            onAction: goToMainMenuFromStatus,
         });
         socket.on("connect", () => {
             if (numberOfPlayers === 2) {
@@ -793,7 +801,7 @@ window.addEventListener("load", () => {
             showStatus("Waking up online server ...", {
                 compact: true,
                 actionLabel: "Main Menu",
-                onAction: quit,
+                onAction: goToMainMenuFromStatus,
             });
         });
     }
