@@ -9,15 +9,19 @@ html {
     height: 88vh;
     display: flex;
     flex-wrap: wrap;
+    align-content: flex-start;
+    overflow: hidden;
     margin-left: auto;
     margin-right: auto;
     margin-top: 6vh;
     
 }
 .square {
-    width: 11vh;
-    height: 11vh;
+    flex: 0 0 12.5%;
+    width: 12.5%;
+    height: 12.5%;
     box-sizing: border-box;
+    display: block;
 }
 
 .square.promotion {
