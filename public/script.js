@@ -774,29 +774,31 @@ function wakeAiServer() {
 // Try to wake AI server immediately (non-blocking).
 wakeAiServer();
 
-if (mode === "online") {
-    showStatus("Connecting to online server ...", {
-        compact: true,
-        actionLabel: "Main Menu",
-        onAction: quit,
-    });
-    socket.on("connect", () => {
-        if (numberOfPlayers === 2) {
-            hideStatus();
-        }
-    });
-    socket.on("connect_error", () => {
-        showStatus("Waking up online server ...", {
+window.addEventListener("load", () => {
+    createSquare();
+    positionUpdate(ChessBoardPosition);
+
+    if (mode === "online") {
+        showStatus("Connecting to online server ...", {
             compact: true,
             actionLabel: "Main Menu",
             onAction: quit,
         });
-    });
-}
+        socket.on("connect", () => {
+            if (numberOfPlayers === 2) {
+                hideStatus();
+            }
+        });
+        socket.on("connect_error", () => {
+            showStatus("Waking up online server ...", {
+                compact: true,
+                actionLabel: "Main Menu",
+                onAction: quit,
+            });
+        });
+    }
 
-createSquare();
-positionUpdate(ChessBoardPosition);
-
-if (pendingInitialAIMove) {
-    AIMoveMaker();
-}
+    if (pendingInitialAIMove) {
+        AIMoveMaker();
+    }
+});
