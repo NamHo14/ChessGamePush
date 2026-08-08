@@ -549,7 +549,7 @@ function reset() {
         "rnbqkbnrpppppppp00000000000000000000000000000000PPPPPPPPRNBQKBNR";
     positionUpdate(ChessBoardPosition);
     const cont = document.querySelector(".main-cont");
-    if (mode !== "pve") cont.style.flexWrap = "wrap";
+    if (cont && mode !== "pve") cont.style.flexWrap = "wrap";
     const div = document.querySelectorAll(".square");
     div.forEach((square) => {
         square.style.border = "";
@@ -681,6 +681,9 @@ function positionUpdate(ChessBoardPosition) {
     for (let i = 0; i < ChessBoardPosition.length; i++) {
         let src = "";
         const div = document.getElementById(i);
+        if (!div) {
+            continue;
+        }
 
         const oldImg = div.querySelector("img");
         if (oldImg) oldImg.remove();
