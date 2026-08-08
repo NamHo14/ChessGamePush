@@ -176,7 +176,7 @@ if (multiplayer) {
     });
 
     socket.on("full", (data) => {
-        wait(true, mode === "online");
+        wait(true);
     });
 
     socket.on("GameOver", (data) => {
@@ -191,12 +191,7 @@ if (multiplayer) {
     socket.on("numberOfPlayers", (data) => {
         numberOfPlayers = data;
         console.log("numberOfPlayers", data);
-        if (mode === "online") {
-            if (numberOfPlayers < 2) wait(false, true);
-            else hideStatus();
-        } else if (numberOfPlayers < 2) {
-            wait();
-        }
+        if (numberOfPlayers < 2) wait();
     });
 
     socket.on("AllyPiece", (data) => {
