@@ -140,12 +140,12 @@ function showStatus(message, options = {}) {
 
     const div = document.createElement("div");
     div.classList.add("cont");
-    div.style.width = options.compact ? "min(42%, 520px)" : "60%";
+    div.style.width = options.compact ? "min(34%, 420px)" : "60%";
     div.style.height = options.compact ? "auto" : "60%";
     if (options.compact) {
-        div.style.padding = "24px 20px";
+        div.style.padding = "18px 16px";
         div.style.textAlign = "center";
-        div.style.gap = "16px";
+        div.style.gap = "12px";
     }
     div.textContent = message;
     overlay.appendChild(div);
@@ -220,15 +220,24 @@ if (multiplayer) {
     });
 }
 
-function wait(full = false) {
+function wait(full = false, compact = false) {
     const div = showStatus(
-        full ? "Server Full" : "Waiting for second player ..."
+        full ? "Server Full" : "Waiting for second player ...",
+        compact
+            ? {
+                  compact: true,
+                  actionLabel: "Main Menu",
+                  onAction: quit,
+              }
+            : {}
     );
-    const quitBtn = document.createElement("div");
-    quitBtn.classList.add("options");
-    quitBtn.textContent = "Main Menu";
-    quitBtn.addEventListener("click", quit);
-    div.appendChild(quitBtn);
+    if (!compact) {
+        const quitBtn = document.createElement("div");
+        quitBtn.classList.add("options");
+        quitBtn.textContent = "Main Menu";
+        quitBtn.addEventListener("click", quit);
+        div.appendChild(quitBtn);
+    }
     socket.on("numberOfPlayers", (data) => {
         numberOfPlayers = data;
         if (numberOfPlayers === 2) {
@@ -748,14 +757,22 @@ function wakeAiServer() {
 wakeAiServer();
 
 if (mode === "online") {
-    showStatus("Connecting to online server ...");
+    showStatus("Connecting to online server ...", {
+        compact: true,
+        actionLabel: "Main Menu",
+        onAction: quit,
+    });
     socket.on("connect", () => {
         if (numberOfPlayers === 2) {
             hideStatus();
         }
     });
     socket.on("connect_error", () => {
-        showStatus("Waking up online server ...");
+        showStatus("Waking up online server ...", {
+            compact: true,
+            actionLabel: "Main Menu",
+            onAction: quit,
+        });
     });
 }
 
