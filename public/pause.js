@@ -9,6 +9,24 @@ bar2.classList.add("bar2");
 pause.append(bar1, bar2);
 pause.addEventListener("click", stop);
 
+function closeOverlayLikeUi() {
+    const overlay = document.querySelector(".overlay");
+    if (overlay) {
+        const all = [overlay, ...overlay.querySelectorAll("*")];
+        all.forEach((elem) => {
+            elem.remove();
+        });
+        return;
+    }
+
+    const statusCard = document.querySelector(
+        "body > .cont[style*='position: fixed']"
+    );
+    if (statusCard) {
+        statusCard.remove();
+    }
+}
+
 function stop() {
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
@@ -42,19 +60,11 @@ function stop() {
 }
 
 function resume() {
-    const overlay = document.querySelector(".overlay");
-    const all = [overlay, ...overlay.querySelectorAll("*")];
-    all.forEach((elem) => {
-        elem.remove();
-    });
+    closeOverlayLikeUi();
 }
 
 function restart() {
-    const overlay = document.querySelector(".overlay");
-    const all = [overlay, ...overlay.querySelectorAll("*")];
-    all.forEach((elem) => {
-        elem.remove();
-    });
+    closeOverlayLikeUi();
     reset();
     if (CHESSAI === true && AIPiece === "RNBKQP") {
         AIMoveMaker();
@@ -62,11 +72,7 @@ function restart() {
 }
 
 function quit() {
-    const overlay = document.querySelector(".overlay");
-    const all = [overlay, ...overlay.querySelectorAll("*")];
-    all.forEach((elem) => {
-        elem.remove();
-    });
+    closeOverlayLikeUi();
     reset();
     window.location.href = "index.html";
 }
