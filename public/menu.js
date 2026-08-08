@@ -8,9 +8,8 @@ function wakeServers() {
         window.location.hostname === "127.0.0.1";
 
     if (!isLocalHost) {
-        // Wake up AI server
-        const aiServerUrl =
-            "https://chessgamepush-production.up.railway.app";
+        // Wake up AI server (must match aiServerUrl in script.js)
+        const aiServerUrl = "https://chessgamepush-production.up.railway.app";
         fetch(aiServerUrl + "/move", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -21,10 +20,10 @@ function wakeServers() {
             }),
         }).catch(() => {}); // Ignore errors, just wake up
 
-        // Wake up multiplayer server
+        // Wake up multiplayer server (must match serverUrl in script.js)
         const multiplayerServerUrl =
             "https://prolific-smile-production-ce7d.up.railway.app";
-        fetch(multiplayerServerUrl + "/health").catch(() => {}); // Ignore errors
+        fetch(multiplayerServerUrl + "/").catch(() => {}); // Ignore errors
     }
 }
 
