@@ -8,6 +8,7 @@ let EnemyPiece = "rnbkqp";
 let selected = false;
 let moveLog = [];
 let squareAttack = [];
+let check = false;
 let CHESSAI = false;
 let AIPiece;
 let multiplayer = false;
@@ -311,12 +312,6 @@ function wait(full = false, compact = false) {
         quitBtn.addEventListener("click", quit);
         div.appendChild(quitBtn);
     }
-    socket.on("numberOfPlayers", (data) => {
-        numberOfPlayers = data;
-        if (numberOfPlayers === 2) {
-            hideStatus();
-        }
-    });
 }
 
 function handleClick(e) {
@@ -395,7 +390,7 @@ function handleClick(e) {
         } else if (promotion === false && AllyPiece !== AIPiece) {
             if (possMoves.includes(parseInt(divId))) {
                 sound.play();
-                RecentMove =
+                const RecentMove =
                     selectedPiece.toString().padStart(2, "0") +
                     ChessBoardPosition[selectedPiece] +
                     divId.padStart(2, "0");
@@ -405,7 +400,7 @@ function handleClick(e) {
                 );
                 positionUpdate(ChessBoardPosition);
                 moveLog.push(RecentMove);
-                promotionPieceInput = multiplayer ? AllyPiece : EnemyPiece;
+                const promotionPieceInput = multiplayer ? AllyPiece : EnemyPiece;
 
                 if (ChessBoardPosition.substring(0, 8).includes("P")) {
                     promotion = true;
@@ -461,7 +456,7 @@ function AIMoveMaker() {
         ChessBoardPosition = performMoves(aiMove, ChessBoardPosition);
         sound.play();
         if (ChessBoardPosition.substring(0, 8).includes("P")) {
-            c = ChessBoardPosition.indexOf("P", 0);
+            const c = ChessBoardPosition.indexOf("P", 0);
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, c) +
                 "Q" +
@@ -470,7 +465,7 @@ function AIMoveMaker() {
             moveLog.push(aiMove + "Q");
         }
         if (ChessBoardPosition.substring(56, 64).includes("p")) {
-            c = ChessBoardPosition.indexOf("p", 56);
+            const c = ChessBoardPosition.indexOf("p", 56);
             ChessBoardPosition =
                 ChessBoardPosition.substring(0, parseInt(c)) +
                 "q" +
@@ -485,11 +480,11 @@ function AIMoveMaker() {
     });
 }
 function performMoves(moves, chessBoardPosition, realBoard = true) {
-    iniPos = parseInt(moves.substring(0, 2));
-    ChessPiece = chessBoardPosition[iniPos];
-    afterPos = parseInt(moves.substring(3, 5));
+    const iniPos = parseInt(moves.substring(0, 2));
+    const ChessPiece = chessBoardPosition[iniPos];
+    const afterPos = parseInt(moves.substring(3, 5));
 
-    PieceEaten = chessBoardPosition[parseInt(moves.substring(3, 5))];
+    const PieceEaten = chessBoardPosition[parseInt(moves.substring(3, 5))];
 
     chessBoardPosition =
         chessBoardPosition.substring(0, afterPos) +
@@ -538,7 +533,7 @@ function performMoves(moves, chessBoardPosition, realBoard = true) {
             }
         }
 
-        let state = CheckmateAndStalemate(chessBoardPosition);
+        const state = CheckmateAndStalemate(chessBoardPosition);
         AlertCheckAndCheckMate(state);
     }
     return chessBoardPosition;

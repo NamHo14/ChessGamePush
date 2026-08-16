@@ -135,6 +135,50 @@ function knightPossibleMoves(color, position, boardPos = ChessBoardPosition) {
     }
     return positionIndexList;
 }
+
+function isSquareAttackedByColor(boardPos, targetSquare, attackerColor) {
+    const allyPieces = attackerColor === "W" ? "RBNKQP" : "rbnkqp";
+
+    for (let i = 0; i < boardPos.length; i++) {
+        const piece = boardPos[i];
+        if (!allyPieces.includes(piece)) {
+            continue;
+        }
+
+        if (piece === "P") {
+            if (pawnPossibleMoves("W", i, boardPos, true).includes(targetSquare)) {
+                return true;
+            }
+            continue;
+        }
+
+        if (piece === "p") {
+            if (pawnPossibleMoves("B", i, boardPos, true).includes(targetSquare)) {
+                return true;
+            }
+            continue;
+        }
+
+        if (piece === "K" || piece === "k") {
+            const r = Math.floor(i / 8);
+            const c = i % 8;
+            const tr = Math.floor(targetSquare / 8);
+            const tc = targetSquare % 8;
+            if (Math.max(Math.abs(tr - r), Math.abs(tc - c)) === 1) {
+                return true;
+            }
+            continue;
+        }
+
+        const moves = possibleMoves(piece, i, boardPos);
+        if (moves.includes(targetSquare)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function kingPossibleMoves(color, position, boardPos = ChessBoardPosition) {
     let allyPiece;
     let enemyPiece;
@@ -187,7 +231,10 @@ function kingPossibleMoves(color, position, boardPos = ChessBoardPosition) {
                 boardPos[58] === "0" &&
                 boardPos[59] === "0" &&
                 boardPos[56] === "R" &&
-                !check
+                !check &&
+                !isSquareAttackedByColor(boardPos, 60, "B") &&
+                !isSquareAttackedByColor(boardPos, 59, "B") &&
+                !isSquareAttackedByColor(boardPos, 58, "B")
             ) {
                 positionIndexList.push(58);
             }
@@ -196,7 +243,10 @@ function kingPossibleMoves(color, position, boardPos = ChessBoardPosition) {
                 boardPos[61] === "0" &&
                 boardPos[62] === "0" &&
                 boardPos[63] === "R" &&
-                !check
+                !check &&
+                !isSquareAttackedByColor(boardPos, 60, "B") &&
+                !isSquareAttackedByColor(boardPos, 61, "B") &&
+                !isSquareAttackedByColor(boardPos, 62, "B")
             ) {
                 positionIndexList.push(62);
             }
@@ -210,7 +260,10 @@ function kingPossibleMoves(color, position, boardPos = ChessBoardPosition) {
                 boardPos[2] === "0" &&
                 boardPos[3] === "0" &&
                 boardPos[0] === "r" &&
-                !check
+                !check &&
+                !isSquareAttackedByColor(boardPos, 4, "W") &&
+                !isSquareAttackedByColor(boardPos, 3, "W") &&
+                !isSquareAttackedByColor(boardPos, 2, "W")
             ) {
                 positionIndexList.push(2);
             }
@@ -219,7 +272,10 @@ function kingPossibleMoves(color, position, boardPos = ChessBoardPosition) {
                 boardPos[5] === "0" &&
                 boardPos[6] === "0" &&
                 boardPos[7] === "r" &&
-                !check
+                !check &&
+                !isSquareAttackedByColor(boardPos, 4, "W") &&
+                !isSquareAttackedByColor(boardPos, 5, "W") &&
+                !isSquareAttackedByColor(boardPos, 6, "W")
             ) {
                 positionIndexList.push(6);
             }
@@ -343,7 +399,7 @@ function pawnPossibleMoves(
             directions[i] * directionmult === 9 * directionmult
         ) {
             if (moveLog.length !== 0) {
-                previousMove = moveLog[moveLog.length - 1];
+                const previousMove = moveLog[moveLog.length - 1];
                 if (
                     Math.abs(
                         parseInt(previousMove.substring(0, 2)) -
